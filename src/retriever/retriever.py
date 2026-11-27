@@ -8,7 +8,7 @@ embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-
 vectorstore = Chroma(
     collection_name="sklearn_docs",
     embedding_function=embeddings,
-    persist_directory="G:\Projects GENAI\LLM_EVAL\src\Evals_notebooks\chroma_db",
+    persist_directory="./chroma_db",
 )
 
 # 3. Create a retriever
