@@ -1,41 +1,43 @@
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_chroma import Chroma
+from langchain_huggingface import HuggingFaceEmbeddings
 
-embeddings = HuggingFaceEmbeddings(
-    model_name="sentence-transformers/all-MiniLM-L6-v2"
-)
+# 1. Load the same embedding model used during indexing
+embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
+# 2. Connect to our existing ChromaDB
 vectorstore = Chroma(
     collection_name="sklearn_docs",
     embedding_function=embeddings,
-    persist_directory="./chroma_db"
+    persist_directory="G:\Projects GENAI\LLM_EVAL\src\Evals_notebooks\chroma_db",
 )
 
-# MMR retriever
-retriever = vectorstore.as_retriever(
-    search_type="mmr",
-    search_kwargs={
-        "k": 5,
-        "fetch_k": 20,
-        "lambda_mult": 0.7
-    }
-)
+# 3. Create a retriever
+retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 5})
 
-def retrieve(query):
-    results = retriever.invoke(query)
+
+# 4. Function to retrieve chunks for a query
+def retrieve(query, top_k=5):
+    results = vectorstore.similarity_search(query, k=top_k)
     return results
 
 
-
+# 5. Run a quick test
 if __name__ == "__main__":
     query = "Why should a model be evaluated on unseen data?"
 
-    results = retrieve(query)
+    results = retrieve(query, top_k=5)
 
-    print(f"\nQuestion: {query}")
-    print(f"Retrieved chunks: {len(results)}")
+    print("\nUSER QUESTION:")
+    print(query)
+
+    print("\nRETRIEVED CHUNKS:")
 
     for i, doc in enumerate(results, start=1):
-        print(f"\n--- Chunk {i} ---")
-        print("Source:", doc.metadata.get("source"))
-        print("Content:", doc.page_content[:500])
+        print("\n" + "=" * 70)
+        print(f"CHUNK {i}")
+        print("=" * 70)
+
+        print("SOURCE:", doc.metadata.get("source"))
+        print("CHUNK NUMBER:", doc.metadata.get("chunk_num"))
+        print("\nCONTENT:")
+        print(doc.page_content)
