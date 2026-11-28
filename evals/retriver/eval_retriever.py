@@ -10,7 +10,7 @@ from deepeval.dataset import EvaluationDataset
 from deepeval.evaluate import AsyncConfig
 from deepeval import evaluate
 
-# AQ.Ab8RN6LPWUeY6jVqBY8kOqeeFgNJQfnMtGGPGx43tREIUzSvSQ
+
 
 os.environ[
     "DEEPEVAL_PER_ATTEMPT_TIMEOUT_SECONDS_OVERRIDE"
@@ -21,7 +21,7 @@ os.environ[
 # )
 
 client = GeminiModel(
-     model="gemini-2.5-flash",api_key="AQ.Ab8RN6LPWUeY6jVqBY8kOqeeFgNJQfnMtGGPGx43tREIUzSvSQ", temperature=0
+     model="gemini-2.5-flash",api_key="", temperature=0
 )
 
 
